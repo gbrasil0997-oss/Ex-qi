@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de QI Profissional - Avaliação Cognitiva</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f3ff',
+                            100: '#e1e7fe',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#1e1b4b',
+                            dark: '#0b0f19',
+                            card: '#151c2e',
+                            border: '#2a3449'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        
+        .glow-bg {
+            background: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.15) 0%, rgba(15, 23, 42, 0) 70%);
+        }
+        
+        .card-glow {
+            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.12);
+        }
+
+        .option-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .option-card:hover {
+            transform: translateY(-2px);
+            border-color: #6366f1;
+            background-color: rgba(99, 102, 241, 0.08);
+        }
+        
+        .option-card.selected {
+            border-color: #6366f1;
+            background-color: rgba(99, 102, 241, 0.18);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.35s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse-border {
+            animation: pulseBorder 2s infinite;
+        }
+
+        @keyframes pulseBorder {
+            0% { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.2); }
+            50% { border-color: rgba(16, 185, 129, 1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+            100% { border-color: rgba(16, 185, 129, 0.4); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0b0f19; }
+        ::-webkit-scrollbar-thumb { background: #2a3449; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4f46e5; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between glow-bg text-slate-100 antialiased selection:bg-brand-500 selection:text-white">
+
+    <header class="border-b border-brand-border/60 bg-brand-dark/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="resetToHome()">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center shadow-lg shadow-brand-500/30">
+                    <i class="fa-solid fa-brain text-white text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+                        CogniMatrix <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-400 border border-brand-500/30">QI Test</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Avaliação de Raciocínio Lógico & Espacial</p>
+                </div>
+            </div>
+            
+            <div id="header-timer" class="hidden items-center gap-2 bg-brand-card px-4 py-2 rounded-xl border border-brand-border">
+                <i class="fa-regular fa-clock text-brand-400 animate-pulse"></i>
+                <span id="timer-display" class="font-mono text-sm font-semibold text-slate-200">00:00</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full flex items-center justify-center">
+
+        <section id="screen-welcome" class="w-full fade-in">
+            <div class="bg-brand-card border border-brand-border rounded-3xl p-6 md:p-10 card-glow relative overflow-hidden">
+                <div class="absolute -top-24 -right-24 w-64 h-64 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div class="text-center max-w-2xl mx-auto mb-10">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                        <i class="fa-solid fa-sparkles text-xs"></i> Teste Padronizado Interativo
+                    </span>
+                    <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-4 tracking-tight leading-tight">
+                        Descubra o seu <span class="bg-gradient-to-r from-brand-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent">Quociente de Inteligência</span>
+                    </h2>
+                    <p class="text-slate-400 text-base md:text-lg leading-relaxed">
+                        Este teste mede habilidades analíticas, reconhecimento de padrões visuais, sequências numéricas e raciocínio espacial abstrato.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
+                    <div class="bg-brand-dark/60 border border-brand-border/70 p-5 rounded-2xl flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mb-3 text-brand-400">
+                            <i class="fa-solid fa-list-check text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-1">10 Questões</h3>
+                        <p class="text-xs text-slate-400">Desafios de matrizes, lógica e padrões numéricos</p>
+                    </div>
+
+                    <div class="bg-brand-dark/60 border border-brand-border/70 p-5 rounded-2xl flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-3 text-purple-400">
+                            <i class="fa-solid fa-stopwatch text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-1">~10 Minutos</h3>
+                        <p class="text-xs text-slate-400">O tempo de resposta influencia seu resultado final</p>
+                    </div>
+
+                    <div class="bg-brand-dark/60 border border-brand-border/70 p-5 rounded-2xl flex flex-col items-center text-center">
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-3 text-emerald-400">
+                            <i class="fa-solid fa-chart-line text-xl"></i>
+                        </div>
+                        <h3 class="font-bold text-white text-base mb-1">Relatório Completo</h3>
+                        <p class="text-xs text-slate-400">Análise na curva de Gauss e explicações gabaritadas</p>
+                    </div>
+                </div>
+
+                <div class="bg-brand-dark/40 border border-brand-border/40 rounded-2xl p-4 mb-8 text-xs md:text-sm text-slate-300 flex items-start gap-3">
+                    <i class="fa-solid fa-circle-info text-brand-400 text-lg mt-0.5"></i>
+                    <div>
+                        <strong class="text-white block mb-0.5">Dicas para melhor precisão:</strong>
+                        Realize o teste sem interrupções, em um ambiente silencioso. Não utilize calculadora ou ajuda externa.
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button onclick="startTest()" class="w-full sm:w-auto px-10 py-4 bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-500 hover:to-indigo-500 text-white font-bold rounded-2xl shadow-lg shadow-brand-600/30 transition-all hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-3 text-lg">
+                        <span>Iniciar Teste Agora</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-quiz" class="w-full hidden fade-in">
+            <div class="bg-brand-card border border-brand-border rounded-3xl p-6 md:p-8 card-glow relative">
+                
+                <div class="mb-6">
+                    <div class="flex justify-between items-center text-xs md:text-sm font-semibold mb-2">
+                        <span class="text-brand-400 uppercase tracking-wider" id="question-category">Categoria</span>
+                        <span class="text-slate-400">Questão <strong class="text-white" id="current-q-num">1</strong> de <span id="total-q-num">10</span></span>
+                    </div>
+                    <div class="w-full h-2.5 bg-brand-dark rounded-full overflow-hidden border border-brand-border/50">
+                        <div id="progress-bar" class="h-full bg-gradient-to-r from-brand-600 to-indigo-400 transition-all duration-300 w-0"></div>
+                    </div>
+                </div>
+
+                <div id="question-container" class="min-h-[300px] flex flex-col justify-between">
+                    <div>
+                        <h3 id="question-text" class="text-xl md:text-2xl font-bold text-white mb-6 leading-snug"></h3>
+
+                        <div id="question-visual" class="mb-6 p-4 bg-brand-dark/80 border border-brand-border rounded-2xl flex items-center justify-center min-h-[140px]"></div>
+
+                        <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8"></div>
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-brand-border/60">
+                        <button id="btn-prev" onclick="prevQuestion()" class="px-5 py-2.5 rounded-xl border border-brand-border text-slate-300 hover:bg-brand-dark transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 text-sm font-semibold">
+                            <i class="fa-solid fa-chevron-left"></i> Anterior
+                        </button>
+
+                        <button id="btn-next" onclick="nextQuestion()" class="px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl font-semibold transition-all flex items-center gap-2 text-sm shadow-md shadow-brand-600/20">
+                            <span id="btn-next-text">Próxima</span> <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-analysis" class="w-full hidden fade-in">
+            <div class="bg-brand-card border border-brand-border rounded-3xl p-8 md:p-12 card-glow text-center max-w-xl mx-auto">
+                <div class="relative w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                    <div class="absolute inset-0 rounded-full border-4 border-brand-500/20"></div>
+                    <div class="absolute inset-0 rounded-full border-4 border-brand-500 border-t-transparent animate-spin"></div>
+                    <i class="fa-solid fa-brain text-3xl text-brand-400 animate-pulse"></i>
+                </div>
+
+                <h3 class="text-2xl font-extrabold text-white mb-2">Analisando suas Respostas...</h3>
+                <p class="text-slate-400 text-sm mb-6">Aguarde enquanto calculamos seu perfil cognitivo completo.</p>
+
+                <div class="space-y-3 text-left max-w-md mx-auto text-xs md:text-sm font-medium">
+                    <div class="flex items-center gap-3 text-slate-300 bg-brand-dark/50 p-3 rounded-xl border border-brand-border/40" id="step-1">
+                        <i class="fa-solid fa-circle-notch animate-spin text-brand-400"></i>
+                        <span>Processando tempo de resposta e precisão...</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-slate-400 bg-brand-dark/30 p-3 rounded-xl border border-brand-border/20" id="step-2">
+                        <i class="fa-regular fa-circle text-slate-600"></i>
+                        <span>Mapeando índice de Raciocínio Lógico e Espacial...</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-slate-400 bg-brand-dark/30 p-3 rounded-xl border border-brand-border/20" id="step-3">
+                        <i class="fa-regular fa-circle text-slate-600"></i>
+                        <span>Comparando dados com a curva de distribuição global...</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="screen-paywall" class="w-full hidden fade-in">
+            <div class="bg-brand-card border border-brand-border rounded-3xl p-6 md:p-8 card-glow relative overflow-hidden max-w-3xl mx-auto">
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <!-- Top Urgency Banner -->
+                <div class="bg-gradient-to-r from-emerald-500/20 via-brand-500/20 to-teal-500/20 border border-emerald-500/30 rounded-2xl p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                            <i class="fa-solid fa-bolt text-lg"></i>
+                        </div>
+                        <div>
+                            <strong class="text-white text-sm block">Relatório de QI Processado!</strong>
+                            <p class="text-xs text-slate-300">Faça a transferência de <strong class="text-emerald-400">R$ 2,00 via PIX</strong> para liberar os resultados.</p>
+                        </div>
+                    </div>
+                    <div class="bg-brand-dark/80 px-3 py-1.5 rounded-xl border border-brand-border font-mono text-xs font-bold text-amber-400 flex items-center gap-2">
+                        <i class="fa-regular fa-clock"></i> Oferta Expira em <span id="checkout-timer">09:59</span>
+                    </div>
+                </div>
+
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-2">Pagamento Oficial via PIX (R$ 2,00)</h2>
+                    <p class="text-slate-400 text-sm max-w-lg mx-auto">Escaneie o QR Code ou copie o código Pix abaixo no aplicativo do seu banco para desbloquear o relatório com seu QI exato, gráfico de Gauss e certificado em PDF.</p>
+                </div>
+
+                <!-- Main PIX Box Layout -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    
+                    <!-- Left Column: Benefits & Beneficiary Info -->
+                    <div class="bg-brand-dark/60 border border-brand-border rounded-2xl p-5 flex flex-col justify-between">
+                        <div>
+                            <span class="inline-block bg-brand-500/20 text-brand-300 border border-brand-500/30 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider mb-3">
+                                <i class="fa-solid fa-shield-check text-xs mr-1"></i> Dados do Recebedor
+                            </span>
+                            
+                            <!-- Beneficiary Card -->
+                            <div class="bg-brand-dark/90 border border-brand-border/80 rounded-xl p-3.5 mb-4 text-xs space-y-1.5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-400">Favorecido:</span>
+                                    <strong class="text-white font-semibold">GILDO BRASIL AZEVEDO</strong>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-400">Cidade:</span>
+                                    <span class="text-slate-200">SÃO PAULO</span>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-slate-400">Valor exato:</span>
+                                    <strong class="text-emerald-400 font-bold">R$ 2,00</strong>
+                                </div>
+                            </div>
+
+                            <h4 class="font-bold text-white text-sm mb-2">Seu relatório incluirá:</h4>
+                            
+                            <ul class="space-y-2 text-xs text-slate-300">
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 shrink-0"></i>
+                                    <span><strong>Pontuação numérica oficial</strong> de QI calculada.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 shrink-0"></i>
+                                    <span><strong>Posição na Curva de Gauss</strong> populacional.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 shrink-0"></i>
+                                    <span><strong>Gabarito completo e comentado</strong> das 10 questões.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <i class="fa-solid fa-circle-check text-emerald-400 text-sm mt-0.5 shrink-0"></i>
+                                    <span><strong>Certificado Digital em PDF</strong> pronto para download.</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-brand-border/60">
+                            <div class="flex items-baseline justify-between">
+                                <span class="text-xs text-slate-400">Total a pagar:</span>
+                                <span class="text-3xl font-black text-emerald-400">R$ 2,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Interactive Real PIX QR Code & Actions -->
+                    <div class="bg-brand-dark/90 border border-emerald-500/50 rounded-2xl p-5 text-center pulse-border flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-center gap-2 mb-2">
+                                <i class="fa-solid fa-pix text-emerald-400 text-xl"></i>
+                                <span class="font-bold text-white text-sm">Escaneie o QR Code PIX</span>
+                            </div>
+
+                            <!-- Real QR Code Image -->
+                            <div class="bg-white p-3 rounded-2xl inline-block mb-3 shadow-lg border border-slate-200 relative group">
+                                <img id="pix-qr-code-img" src="" alt="QR Code Pix R$ 2,00" class="w-40 h-40 mx-auto block object-contain">
+                                <div class="text-[10px] text-slate-500 mt-1 font-mono">Aponta a câmera do banco</div>
+                            </div>
+
+                            <!-- PIX Copy Code Button -->
+                            <div class="space-y-2">
+                                <button onclick="copyPixCode()" id="btn-copy-pix" class="w-full py-2.5 px-3 bg-brand-card hover:bg-brand-card/80 border border-emerald-500/60 hover:border-emerald-400 rounded-xl text-xs text-emerald-300 transition-all flex items-center justify-center gap-2 font-semibold">
+                                    <i class="fa-regular fa-copy"></i> <span id="text-copy-pix">Copiar Código Pix Copia e Cola</span>
+                                </button>
+                                
+                                <div class="bg-brand-dark p-2 rounded-xl border border-brand-border text-[10px] text-slate-400 font-mono break-all line-clamp-2" id="pix-string-preview">
+                                    00020126580014br.gov.bcb.pix0136dd5c73d6-fb5a-40a5-9781-1472aa86b776...
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manual Verification Button -->
+                        <div class="mt-4 pt-3 border-t border-brand-border/60">
+                            <button onclick="simulatePaymentProcess()" id="btn-pay-now" class="w-full py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 text-xs md:text-sm">
+                                <i class="fa-solid fa-circle-check text-base"></i>
+                                <span>Já Paguei via PIX (Verificar Pagamento)</span>
+                            </button>
+                            <p class="text-[10px] text-slate-400 text-center mt-2">
+                               Após realizar a transferência de R$ 2,00 no seu app do banco, clique no botão acima para liberar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Trust badging -->
+                <div class="border-t border-brand-border/60 pt-4 flex flex-wrap items-center justify-between text-xs text-slate-400 gap-2">
+                    <span class="flex items-center gap-1 text-emerald-400 font-medium">
+                        <i class="fa-solid fa-lock"></i> Pagamento Direto PIX Banco Central
+                    </span>
+                    <span>Liberação do Resultado de QI Instantânea</span>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="screen-results" class="w-full hidden fade-in">
+            <div class="space-y-6">
+                
+                <!-- Unlocked Banner Notification -->
+                <div class="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 flex items-center justify-between gap-3 text-xs md:text-sm text-emerald-300">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+                        <span><strong>Pagamento PIX de R$ 2,00 Confirmado!</strong> Seu relatório oficial foi liberado.</span>
+                    </div>
+                    <button onclick="downloadCertificate()" class="px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 rounded-lg font-semibold flex items-center gap-1.5 shrink-0 transition-all text-xs">
+                        <i class="fa-solid fa-file-pdf"></i> Baixar Certificado
+                    </button>
+                </div>
+
+                <!-- Score Main Banner -->
+                <div class="bg-brand-card border border-brand-border rounded-3xl p-6 md:p-8 card-glow text-center relative overflow-hidden">
+                    <div class="absolute -top-20 -left-20 w-56 h-56 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <span class="inline-block px-3 py-1 rounded-full bg-brand-500/20 text-brand-400 text-xs font-bold uppercase tracking-wider mb-3">
+                        Relatório Oficial de QI
+                    </span>
+
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white mb-2">Sua Pontuação Estimada de QI</h2>
+                    
+                    <div class="my-6 inline-flex flex-col items-center justify-center">
+                        <div class="text-6xl md:text-8xl font-black bg-gradient-to-r from-indigo-300 via-brand-400 to-purple-300 bg-clip-text text-transparent tracking-tight" id="score-iq">
+                            120
+                        </div>
+                        <div class="text-lg md:text-xl font-bold text-emerald-400 mt-1" id="score-classification">
+                            Acima da Média
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap justify-center gap-4 text-xs md:text-sm text-slate-300 max-w-lg mx-auto mb-6">
+                        <div class="bg-brand-dark/70 px-4 py-2 rounded-xl border border-brand-border flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-brand-400"></i>
+                            <span>Acertos: <strong id="score-accuracy" class="text-white">8/10</strong></span>
+                        </div>
+                        <div class="bg-brand-dark/70 px-4 py-2 rounded-xl border border-brand-border flex items-center gap-2">
+                            <i class="fa-solid fa-stopwatch text-purple-400"></i>
+                            <span>Tempo Total: <strong id="score-time" class="text-white">04:12</strong></span>
+                        </div>
+                        <div class="bg-brand-dark/70 px-4 py-2 rounded-xl border border-brand-border flex items-center gap-2">
+                            <i class="fa-solid fa-percent text-indigo-400"></i>
+                            <span>Percentil: <strong id="score-percentile" class="text-white">Top 15%</strong></span>
+                        </div>
+                    </div>
+
+                    <p class="text-xs md:text-sm text-slate-400 max-w-xl mx-auto leading-relaxed" id="score-description">
+                        Você demonstrou excelente capacidade de resolução de problemas, identificação de padrões e raciocínio lógico-matemático.
+                    </p>
+                </div>
+
+                <!-- Bell Curve (Normal Distribution) Card -->
+                <div class="bg-brand-card border border-brand-border rounded-3xl p-6 md:p-8">
+                    <h3 class="font-bold text-lg text-white mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-area text-brand-400"></i> Distribuição Populacional de QI (Curva de Gauss)
+                    </h3>
+                    <p class="text-xs text-slate-400 mb-6">Veja onde seu resultado se posiciona na curva de distribuição normal da população mundial.</p>
+
+                    <div class="relative w-full overflow-hidden bg-brand-dark/60 rounded-2xl p-4 border border-brand-border/60">
+                        <svg viewBox="0 0 500 180" class="w-full h-auto max-h-[220px]">
+                            <defs>
+                                <linearGradient id="bellGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                                    <stop offset="50%" stop-color="#6366f1" stop-opacity="0.6"/>
+                                    <stop offset="100%" stop-color="#a855f7" stop-opacity="0.3"/>
+                                </linearGradient>
+                            </defs>
+                            
+                            <path d="M 20 160 Q 150 160 200 100 Q 250 10 300 100 Q 350 160 480 160 Z" fill="url(#bellGrad)" stroke="#6366f1" stroke-width="2"/>
+                            <line x1="10" y1="160" x2="490" y2="160" stroke="#2a3449" stroke-width="2"/>
+
+                            <g class="text-[10px] fill-slate-400 font-sans text-anchor-middle">
+                                <text x="90" y="175" text-anchor="middle">70</text>
+                                <text x="170" y="175" text-anchor="middle">85</text>
+                                <text x="250" y="175" text-anchor="middle">100 (Média)</text>
+                                <text x="330" y="175" text-anchor="middle">115</text>
+                                <text x="410" y="175" text-anchor="middle">130+</text>
+                            </g>
+
+                            <g id="user-marker" transform="translate(250, 0)">
+                                <line x1="0" y1="30" x2="0" y2="158" stroke="#34d399" stroke-width="2" stroke-dasharray="4"/>
+                                <circle cx="0" cy="30" r="6" fill="#34d399" class="animate-ping opacity-75"/>
+                                <circle cx="0" cy="30" r="6" fill="#34d399"/>
+                                <rect x="-25" y="5" width="50" height="18" rx="4" fill="#10b981"/>
+                                <text x="0" y="17" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle" id="marker-text">100</text>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4 text-xs text-slate-400">
+                        <div class="bg-brand-dark/40 p-2 rounded-lg border border-brand-border/40 text-center">
+                            <span class="block text-slate-300 font-semibold">&lt; 85</span>
+                            <span>Abaixo da Média</span>
+                        </div>
+                        <div class="bg-brand-dark/40 p-2 rounded-lg border border-brand-border/40 text-center">
+                            <span class="block text-slate-300 font-semibold">85 - 114</span>
+                            <span>Média Normal</span>
+                        </div>
+                        <div class="bg-brand-dark/40 p-2 rounded-lg border border-brand-border/40 text-center">
+                            <span class="block text-slate-300 font-semibold">115 - 129</span>
+                            <span>Acima da Média</span>
+                        </div>
+                        <div class="bg-brand-dark/40 p-2 rounded-lg border border-brand-border/40 text-center">
+                            <span class="block font-semibold text-emerald-400">130+</span>
+                            <span>Superdotado / Genial</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Breakdown & Explanations -->
+                <div class="bg-brand-card border border-brand-border rounded-3xl p-6 md:p-8">
+                    <h3 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-brand-400"></i> Gabarito Explicativo & Revisão
+                    </h3>
+
+                    <div id="breakdown-container" class="space-y-4"></div>
+                </div>
+
+                <!-- Action Footer -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                    <button onclick="downloadCertificate()" class="w-full sm:w-auto px-8 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-file-pdf"></i> Baixar Certificado PDF
+                    </button>
+                    <button onclick="resetToHome()" class="w-full sm:w-auto px-8 py-3.5 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-brand-600/30 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Refazer o Teste
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="border-t border-brand-border/40 py-6 bg-brand-dark/60 text-center text-xs text-slate-500">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p>© 2026 CogniMatrix Test - Ferramenta Educacional e de Entretenimento.</p>
+            <p class="flex items-center gap-1">
+                <i class="fa-solid fa-shield-halved text-brand-500"></i> Pagamento oficial PIX R$ 2,00.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // User's Real Provided PIX Payload String
+        const OFFICIAL_PIX_PAYLOAD = "00020126580014br.gov.bcb.pix0136dd5c73d6-fb5a-40a5-9781-1472aa86b77652040000530398654042.005802BR5920GILDO BRASIL AZEVEDO6009SAO PAULO62580520SAN2026100301435769350300017br.gov.bcb.brcode01051.0.0630498F4";
+
+        const questionsData = [
+            {
+                id: 1,
+                category: "Sequência Numérica",
+                question: "Qual número completa logicamente a sequência a seguir?\n2, 4, 8, 16, 32, [ ? ]",
+                visualType: "none",
+                options: ["48", "64", "50", "128"],
+                correct: 1,
+                explanation: "Cada número é o dobro do anterior (multiplicação por 2). Portanto, 32 × 2 = 64."
+            },
+            {
+                id: 2,
+                category: "Raciocínio Lógico & Padrões",
+                question: "Qual o número que falta no padrão da última linha?\n3 — 9 — 27\n4 — 16 — 64\n5 — 25 — [ ? ]",
+                visualType: "none",
+                options: ["100", "125", "150", "75"],
+                correct: 1,
+                explanation: "A sequência representa potências: x¹, x², x³. Na última linha: 5¹ = 5, 5² = 25 e 5³ = 125."
+            },
+            {
+                id: 3,
+                category: "Analogia Verbal & Conceitual",
+                question: "MÉDICO está para HOSPITAL assim como PROFESSOR está para:",
+                visualType: "none",
+                options: ["LIVRO", "ALUNO", "ESCOLA", "AULA"],
+                correct: 2,
+                explanation: "A relação é de profissional para o seu local principal de trabalho. O médico atua no hospital; o professor atua na escola."
+            },
+            {
+                id: 4,
+                category: "Raciocínio Espacial / Visual",
+                question: "Examine a rotação da figura geométrica. Qual opção substitui o ponto de interrogação?",
+                visualType: "svg_rotation",
+                options: ["Seta apontando para Baixo", "Seta apontando para a Esquerda", "Seta em Diagonal", "Seta Dupla"],
+                correct: 1,
+                explanation: "A seta rotaciona 90 graus no sentido horário a cada passo: Cima → Direita → Baixo → Esquerda."
+            },
+            {
+                id: 5,
+                category: "Lógica Numérica",
+                question: "Se 3 gatos pegam 3 ratos em 3 minutos, quanto tempo 100 gatos levam para pegar 100 ratos?",
+                visualType: "none",
+                options: ["100 minutos", "33 minutos", "3 minutos", "1 minuto"],
+                correct: 2,
+                explanation: "Se 3 gatos pegam 3 ratos em 3 minutos, significa que cada gato leva 3 minutos para caçar 1 rato. Logo, 100 gatos caçando 100 ratos simultaneamente levarão os mesmos 3 minutos."
+            },
+            {
+                id: 6,
+                category: "Padrão Abstrato Matrix",
+                question: "Qual forma preenche a lacuna do padrão visual?",
+                visualType: "svg_matrix",
+                options: ["Quadrado Preto", "Círculo Branco com Borda", "Triângulo Vermelho", "Losango Azul"],
+                correct: 0,
+                explanation: "Nas linhas da matriz, as formas alternam entre Círculo, Triângulo e Quadrado. Na última linha faltava o Quadrado."
+            },
+            {
+                id: 7,
+                category: "Sequência de Letras",
+                question: "Descubra a letra seguinte do alfabeto que completa o padrão: A, C, F, J, O, [ ? ]",
+                visualType: "none",
+                options: ["P", "R", "U", "S"],
+                correct: 2,
+                explanation: "O intervalo de letras puladas aumenta sucessivamente: A (+2) C (+3) F (+4) J (+5) O (+6) U."
+            },
+            {
+                id: 8,
+                category: "Raciocínio Dedutivo",
+                question: "Todos os Zips são Zaps. Nenhum Zap é Zup. Podemos afirmar com certeza absoluta que:",
+                visualType: "none",
+                options: [
+                    "Nenhum Zip é Zup",
+                    "Alguns Zups são Zips",
+                    "Todos os Zups são Zaps",
+                    "Zips e Zups são a mesma coisa"
+                ],
+                correct: 0,
+                explanation: "Como todos os Zips pertencem ao grupo dos Zaps, e nenhum Zap pertence ao grupo Zup, é impossível que qualquer Zip seja Zup."
+            },
+            {
+                id: 9,
+                category: "Matemática Rápida & Lógica",
+                question: "Em um recipiente, uma colônia de bactérias dobra de tamanho a cada minuto. Se leva 48 minutos para encher o recipiente completo, em quantos minutos ele esteve pela METADE?",
+                visualType: "none",
+                options: ["24 minutos", "47 minutos", "36 minutos", "12 minutos"],
+                correct: 1,
+                explanation: "Como a colônia dobra a cada minuto, exatamente 1 minuto antes de estar cheia (48 min) ela estava na metade de sua capacidade (47 min)."
+            },
+            {
+                id: 10,
+                category: "Raciocínio Espacial / Cubo",
+                question: "Quantos cubos pequenos de 1x1x1 são necessários no total para construir um cubo sólido maior de 3x3x3?",
+                visualType: "none",
+                options: ["9", "18", "27", "36"],
+                correct: 2,
+                explanation: "O volume de um cubo de lado 3 é calculado por 3³ = 3 × 3 × 3 = 27 cubos."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questionsData.length).fill(null);
+        let timerInterval = null;
+        let checkoutTimerInterval = null;
+        let totalSecondsElapsed = 0;
+        let finalIQCalculated = 100;
+
+        window.onload = function() {
+            // Set real scannable QR code image source using QR Server API
+            const qrImg = document.getElementById('pix-qr-code-img');
+            qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(OFFICIAL_PIX_PAYLOAD)}`;
+            
+            document.getElementById('pix-string-preview').textContent = OFFICIAL_PIX_PAYLOAD;
+        };
+
+        function startTest() {
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+            document.getElementById('header-timer').classList.remove('hidden');
+            
+            currentQuestionIndex = 0;
+            userAnswers.fill(null);
+            totalSecondsElapsed = 0;
+            
+            startTimer();
+            renderQuestion();
+        }
+
+        function resetToHome() {
+            clearInterval(timerInterval);
+            clearInterval(checkoutTimerInterval);
+            document.getElementById('screen-results').classList.add('hidden');
+            document.getElementById('screen-paywall').classList.add('hidden');
+            document.getElementById('screen-analysis').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('header-timer').classList.add('hidden');
+            document.getElementById('screen-welcome').classList.remove('hidden');
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            const timerDisplay = document.getElementById('timer-display');
+            timerInterval = setInterval(() => {
+                totalSecondsElapsed++;
+                const mins = String(Math.floor(totalSecondsElapsed / 60)).padStart(2, '0');
+                const secs = String(totalSecondsElapsed % 60).padStart(2, '0');
+                timerDisplay.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function renderQuestion() {
+            const q = questionsData[currentQuestionIndex];
+            
+            document.getElementById('question-category').textContent = q.category;
+            document.getElementById('current-q-num').textContent = currentQuestionIndex + 1;
+            document.getElementById('total-q-num').textContent = questionsData.length;
+            
+            const progressPercent = ((currentQuestionIndex + 1) / questionsData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+            document.getElementById('question-text').innerText = q.question;
+
+            const visualContainer = document.getElementById('question-visual');
+            if (q.visualType === 'svg_rotation') {
+                visualContainer.classList.remove('hidden');
+                visualContainer.innerHTML = `
+                    <div class="flex items-center gap-4 text-brand-400">
+                        <div class="p-3 bg-brand-dark rounded-xl border border-brand-border"><i class="fa-solid fa-arrow-up text-2xl"></i></div>
+                        <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
+                        <div class="p-3 bg-brand-dark rounded-xl border border-brand-border"><i class="fa-solid fa-arrow-right text-2xl"></i></div>
+                        <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
+                        <div class="p-3 bg-brand-dark rounded-xl border border-brand-border"><i class="fa-solid fa-arrow-down text-2xl"></i></div>
+                        <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
+                        <div class="p-3 bg-brand-500/20 border-2 border-dashed border-brand-400 rounded-xl text-white font-bold text-xl flex items-center justify-center w-12 h-12">?</div>
+                    </div>
+                `;
+            } else if (q.visualType === 'svg_matrix') {
+                visualContainer.classList.remove('hidden');
+                visualContainer.innerHTML = `
+                    <div class="grid grid-cols-3 gap-3 text-center text-slate-300">
+                        <div class="p-2 bg-brand-dark rounded-lg border border-brand-border"><i class="fa-regular fa-circle text-xl"></i></div>
+                        <div class="p-2 bg-brand-dark rounded-lg border border-brand-border"><i class="fa-solid fa-play text-xl rotate-[270deg]"></i></div>
+                        <div class="p-2 bg-brand-dark rounded-lg border border-brand-border"><i class="fa-regular fa-square text-xl"></i></div>
+                        <div class="p-2 bg-brand-dark rounded-lg border border-brand-border"><i class="fa-solid fa-play text-xl rotate-[270deg]"></i></div>
+                        <div class="p-2 bg-brand-dark rounded-lg border border-brand-border"><i class="fa-regular fa-square text-xl"></i></div>
+                        <div class="p-2 bg-brand-dark rounded-lg border border-brand-border"><i class="fa-regular fa-circle text-xl"></i></div>
+                        <div class="p-2 bg-brand-dark rounded-lg border border-brand-border"><i class="fa-regular fa-circle text-xl"></i></div>
+                        <div class="p-2 bg-brand-dark rounded-lg border border-brand-border"><i class="fa-solid fa-play text-xl rotate-[270deg]"></i></div>
+                        <div class="p-2 bg-brand-500/20 border-2 border-dashed border-brand-400 rounded-lg font-bold text-brand-300 flex items-center justify-center">?</div>
+                    </div>
+                `;
+            } else {
+                visualContainer.classList.add('hidden');
+            }
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const selectedOption = userAnswers[currentQuestionIndex];
+
+            q.options.forEach((optionText, idx) => {
+                const isSelected = selectedOption === idx;
+                const optionBtn = document.createElement('button');
+                optionBtn.className = `option-card w-full text-left p-4 rounded-2xl border ${isSelected ? 'selected' : 'border-brand-border bg-brand-dark/50'} text-slate-200 flex items-center gap-3`;
+                
+                const letter = String.fromCharCode(65 + idx);
+                
+                optionBtn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl ${isSelected ? 'bg-brand-500 text-white' : 'bg-brand-dark text-slate-400 border border-brand-border'} flex items-center justify-center text-xs font-bold shrink-0">
+                        ${letter}
+                    </span>
+                    <span class="text-sm font-medium leading-normal">${optionText}</span>
+                `;
+
+                optionBtn.onclick = () => selectOption(idx);
+                optionsContainer.appendChild(optionBtn);
+            });
+
+            document.getElementById('btn-prev').disabled = currentQuestionIndex === 0;
+
+            const nextBtnText = document.getElementById('btn-next-text');
+            if (currentQuestionIndex === questionsData.length - 1) {
+                nextBtnText.textContent = "Finalizar e Ver Análise";
+            } else {
+                nextBtnText.textContent = "Próxima";
+            }
+        }
+
+        function selectOption(optionIndex) {
+            userAnswers[currentQuestionIndex] = optionIndex;
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (userAnswers[currentQuestionIndex] === null) {
+                const messageBox = document.createElement('div');
+                messageBox.className = "fixed bottom-6 right-6 bg-rose-600 text-white px-5 py-3 rounded-xl shadow-xl z-50 text-xs font-bold flex items-center gap-2 animate-bounce";
+                messageBox.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Por favor, selecione uma opção para continuar.`;
+                document.body.appendChild(messageBox);
+                setTimeout(() => messageBox.remove(), 2500);
+                return;
+            }
+
+            if (currentQuestionIndex < questionsData.length - 1) {
+                currentQuestionIndex++;
+                renderQuestion();
+            } else {
+                finishQuizAndShowAnalysis();
+            }
+        }
+
+        function finishQuizAndShowAnalysis() {
+            clearInterval(timerInterval);
+            
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-analysis').classList.remove('hidden');
+
+            setTimeout(() => {
+                const step1 = document.getElementById('step-1');
+                step1.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span class="text-white">Tempo de resposta e precisão processados.</span>`;
+                const step2 = document.getElementById('step-2');
+                step2.className = "flex items-center gap-3 text-slate-300 bg-brand-dark/50 p-3 rounded-xl border border-brand-border/40";
+                step2.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-brand-400"></i><span>Mapeando índice de Raciocínio Lógico e Espacial...</span>`;
+            }, 1200);
+
+            setTimeout(() => {
+                const step2 = document.getElementById('step-2');
+                step2.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span class="text-white">Índice cognitivo calculado com sucesso.</span>`;
+                const step3 = document.getElementById('step-3');
+                step3.className = "flex items-center gap-3 text-slate-300 bg-brand-dark/50 p-3 rounded-xl border border-brand-border/40";
+                step3.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-brand-400"></i><span>Comparando dados com a curva de distribuição global...</span>`;
+            }, 2400);
+
+            setTimeout(() => {
+                document.getElementById('screen-analysis').classList.add('hidden');
+                openPaywallScreen();
+            }, 3600);
+        }
+
+        function openPaywallScreen() {
+            document.getElementById('screen-paywall').classList.remove('hidden');
+            startCheckoutTimer(600);
+        }
+
+        function startCheckoutTimer(durationSeconds) {
+            let timer = durationSeconds;
+            const display = document.getElementById('checkout-timer');
+            clearInterval(checkoutTimerInterval);
+            
+            checkoutTimerInterval = setInterval(() => {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+                display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (--timer < 0) {
+                    clearInterval(checkoutTimerInterval);
+                    display.textContent = "00:00";
+                }
+            }, 1000);
+        }
+
+        function copyPixCode() {
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = OFFICIAL_PIX_PAYLOAD;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            const copyText = document.getElementById('text-copy-pix');
+            const btnCopy = document.getElementById('btn-copy-pix');
+            
+            btnCopy.className = "w-full py-2.5 px-3 bg-emerald-500/20 border border-emerald-400 rounded-xl text-xs text-emerald-300 transition-all flex items-center justify-center gap-2 font-semibold";
+            copyText.textContent = "Código PIX Copiado com Sucesso!";
+            
+            setTimeout(() => {
+                btnCopy.className = "w-full py-2.5 px-3 bg-brand-card hover:bg-brand-card/80 border border-emerald-500/60 hover:border-emerald-400 rounded-xl text-xs text-emerald-300 transition-all flex items-center justify-center gap-2 font-semibold";
+                copyText.textContent = "Copiar Código Pix Copia e Cola";
+            }, 3000);
+        }
+
+        function simulatePaymentProcess() {
+            const btn = document.getElementById('btn-pay-now');
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> <span>Verificando Transferência de R$ 2,00...</span>`;
+
+            setTimeout(() => {
+                btn.className = "w-full py-3 bg-emerald-600 text-white font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs md:text-sm";
+                btn.innerHTML = `<i class="fa-solid fa-check-circle"></i> <span>Pagamento Confirmado! Liberando Relatório...</span>`;
+                
+                setTimeout(() => {
+                    unlockResultsScreen();
+                }, 1200);
+            }, 2000);
+        }
+
+        function unlockResultsScreen() {
+            document.getElementById('screen-paywall').classList.add('hidden');
+            document.getElementById('screen-results').classList.remove('hidden');
+
+            let correctCount = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === questionsData[idx].correct) {
+                    correctCount++;
+                }
+            });
+
+            const totalQs = questionsData.length;
+            const accuracyRatio = correctCount / totalQs;
+            const expectedTime = totalQs * 40; 
+            let timeBonus = 0;
+            if (totalSecondsElapsed < expectedTime && accuracyRatio >= 0.5) {
+                timeBonus = Math.min(8, Math.floor((expectedTime - totalSecondsElapsed) / 25));
+            }
+
+            let calculatedIQ = Math.round(75 + (accuracyRatio * 55) + timeBonus);
+            if (calculatedIQ > 145) calculatedIQ = 145;
+            if (calculatedIQ < 70) calculatedIQ = 70;
+            finalIQCalculated = calculatedIQ;
+
+            let classification = "";
+            let percentile = "";
+            let description = "";
+
+            if (calculatedIQ >= 130) {
+                classification = "Genial / Muita Alta Capacidade (Superdotado)";
+                percentile = "Top 2%";
+                description = "Sua capacidade de raciocínio abstrato, resolução de problemas e lógica pura é extraordinária, situando você entre os 2% mais elevados da população.";
+            } else if (calculatedIQ >= 115) {
+                classification = "Acima da Média (Superior)";
+                percentile = "Top 15%";
+                description = "Você possui um raciocínio analítico elevado, excelente capacidade de identificação de padrões e rápidas deduções lógicas.";
+            } else if (calculatedIQ >= 90) {
+                classification = "Média Normal";
+                percentile = "Top 50%";
+                description = "Sua pontuação está perfeitamente alinhada com a média populacional global, demonstrando bom equilíbrio cognitivo.";
+            } else {
+                classification = "Abaixo da Média";
+                percentile = "Faixa Inferior";
+                description = "Sua pontuação indica que você pode ter tido dificuldades com o tempo ou com alguns padrões. Fatores como cansaço podem influenciar o teste.";
+            }
+
+            document.getElementById('score-iq').textContent = calculatedIQ;
+            document.getElementById('score-classification').textContent = classification;
+            document.getElementById('score-accuracy').textContent = `${correctCount}/${totalQs}`;
+            
+            const mins = String(Math.floor(totalSecondsElapsed / 60)).padStart(2, '0');
+            const secs = String(totalSecondsElapsed % 60).padStart(2, '0');
+            document.getElementById('score-time').textContent = `${mins}:${secs}`;
+            document.getElementById('score-percentile').textContent = percentile;
+            document.getElementById('score-description').textContent = description;
+
+            const minX = 60;
+            const maxX = 440;
+            const normalizedRatio = Math.max(0, Math.min(1, (calculatedIQ - 70) / 65));
+            const markerX = minX + (normalizedRatio * (maxX - minX));
+
+            const markerElement = document.getElementById('user-marker');
+            markerElement.setAttribute('transform', `translate(${markerX}, 0)`);
+            document.getElementById('marker-text').textContent = calculatedIQ;
+
+            renderBreakdown();
+        }
+
+        function renderBreakdown() {
+            const container = document.getElementById('breakdown-container');
+            container.innerHTML = '';
+
+            questionsData.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.correct;
+                const userChoiceLetter = userAns !== null ? String.fromCharCode(65 + userAns) : "Não respondida";
+                const correctChoiceLetter = String.fromCharCode(65 + q.correct);
+
+                const item = document.createElement('div');
+                item.className = `p-4 rounded-2xl border ${isCorrect ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-rose-950/20 border-rose-500/30'} flex flex-col gap-2`;
+
+                item.innerHTML = `
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <span class="w-6 h-6 rounded-full ${isCorrect ? 'bg-emerald-500 text-white' : 'bg-rose-500 text-white'} flex items-center justify-center text-xs font-bold shrink-0">
+                                ${isCorrect ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>'}
+                            </span>
+                            <span class="text-sm font-bold text-white">Questão ${idx + 1}: ${q.category}</span>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-md ${isCorrect ? 'bg-emerald-500/20 text-emerald-300' : 'bg-rose-500/20 text-rose-300'} font-semibold">
+                            ${isCorrect ? 'Acertou' : 'Errou'}
+                        </span>
+                    </div>
+
+                    <p class="text-xs text-slate-300 pl-8">${q.question.replace(/\n/g, '<br>')}</p>
+
+                    <div class="pl-8 text-xs space-y-1 mt-1">
+                        <p class="text-slate-400">Sua resposta: <strong class="${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">${userChoiceLetter}) ${userAns !== null ? q.options[userAns] : ''}</strong></p>
+                        ${!isCorrect ? `<p class="text-slate-400">Resposta correta: <strong class="text-emerald-400">${correctChoiceLetter}) ${q.options[q.correct]}</strong></p>` : ''}
+                        
+                        <div class="mt-2 p-2.5 rounded-xl bg-brand-dark/80 border border-brand-border/50 text-slate-300">
+                            <strong class="text-brand-400 block mb-0.5">Explicação Lógica:</strong>
+                            ${q.explanation}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(item);
+            });
+        }
+
+        function downloadCertificate() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1000;
+            canvas.height = 700;
+            const ctx = canvas.getContext('2d');
+
+            const grad = ctx.createLinearGradient(0, 0, 1000, 700);
+            grad.addColorStop(0, '#0b0f19');
+            grad.addColorStop(1, '#1e1b4b');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1000, 700);
+
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 10;
+            ctx.strokeRect(30, 30, 940, 640);
+            ctx.strokeStyle = '#4f46e5';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(45, 45, 910, 610);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 36px "Plus Jakarta Sans", sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('CERTIFICADO DE AVALIAÇÃO COGNITIVA', 500, 130);
+
+            ctx.fillStyle = '#818cf8';
+            ctx.font = '18px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('COGNIMATRIX STANDARDIZED IQ TEST', 500, 170);
+
+            ctx.fillStyle = '#d1d5db';
+            ctx.font = '20px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText('Certificamos que o participante concluiu com sucesso a avaliação de QI,', 500, 260);
+            ctx.fillText('alcançando o seguinte resultado oficial registrado:', 500, 295);
+
+            ctx.fillStyle = '#34d399';
+            ctx.font = 'extrabold 80px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(`${finalIQCalculated} QI`, 500, 410);
+
+            ctx.fillStyle = '#a7f3d0';
+            ctx.font = 'bold 22px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(document.getElementById('score-classification').textContent, 500, 460);
+
+            const today = new Date().toLocaleDateString('pt-BR');
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '14px "Plus Jakarta Sans", sans-serif';
+            ctx.fillText(`Data de emissão: ${today}  |  Código de Validação: CM-${Math.floor(100000 + Math.random() * 900000)}`, 500, 580);
+
+            const link = document.createElement('a');
+            link.download = `Certificado_QI_CogniMatrix_${finalIQCalculated}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
